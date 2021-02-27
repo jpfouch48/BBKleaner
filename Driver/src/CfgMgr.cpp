@@ -23,7 +23,10 @@ bool CfgMgr::parse_config()
   std::ifstream lStream(mCfgFileName);
   lStream >> mJson;
 
+  // TODO: READ IN THE DEVICE TYPES AND STORE THEM
   std::cout << mJson["device types"] << std::endl;
+
+  // TODO: READ IN THE DEVICES AND STORE THEM
 
   mLogMgr->Trace("CfgMgr::parse_config - end\n");
   return true;
