@@ -11,12 +11,12 @@
       "states": [
         {
           "name": "open",
-          "pin value": { "0": 0 }
+          "pin value": [ 0 ]
         },
 
         {
           "name": "close",
-          "pin value": { "0": 1 }
+          "pin value": [ 1 ]
         }
       ]
     },
@@ -27,17 +27,17 @@
       "states": [
         {
           "name": "open",
-          "pin value": { "0": 0, "1": 1 }
+          "pin value": [ 0, 1 ]
         },
 
         {
           "name": "close",
-          "pin value": { "0": 1, "1": 0 }
+          "pin value": [ 1, 0 ]
         },
 
         {
           "name": "idle",
-          "pin value": { "0": 0, "1": 0 }
+          "pin value": [ 0, 0 ]
         }
       ]
     }
@@ -47,49 +47,49 @@
     {
       "name": "Co2",
       "type": "relay",
-      "pins": { "0": 10 }
+      "pins": [ 10 ]
     },
 
     {
       "name": "Pump",
       "type": "relay",
-      "pins": { "0": 11 }
+      "pins": [ 11 ]
     },
 
     {
       "name": "Water In",
       "type": "ball valve",
-      "pins": { "0": 12, "1": 13 }
+      "pins": [ 12, 13 ]
     },
 
     {
       "name": "Sanitizer In",
       "type": "ball valve",
-      "pins": { "0": 14, "1": 15 }
+      "pins": [ 14, 15 ]
     },
 
     {
       "name": "Cleaner In",
       "type": "ball valve",
-      "pins": { "0": 16, "1": 17 }
+      "pins": [ 16, 17 ]
     },
 
     {
       "name": "Waste Out",
       "type": "ball valve",
-      "pins": { "0": 18, "1": 19 }
+      "pins": [ 18, 19 ]
     },
 
     {
       "name": "Sanitizer Out",
       "type": "ball valve",
-      "pins": { "0": 20, "1": 21 }
+      "pins": [ 20, 21 ]
     },
 
     {
       "name": "Cleaner Out",
       "type": "ball valve",
-      "pins": { "0": 21, "1": 22 }
+      "pins": [ 21, 22 ]
     }
   ]
 }
