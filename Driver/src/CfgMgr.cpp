@@ -25,11 +25,19 @@ bool CfgMgr::parse_config()
 
   // TODO: READ IN THE DEVICE TYPES AND STORE THEM
   json lDeviceTypes = mJson["device types"];
-  mLogMgr->Info("Device Type:\n%s\n", lDeviceTypes.dump());
+
+  for(auto &lDeviceType : lDeviceTypes.items())
+  {
+    mLogMgr->Info("Device Type: %s\n%s\n", lDeviceType.key().c_str(), lDeviceType.value().dump().c_str());
+  }
   
   // TODO: READ IN THE DEVICES AND STORE THEM
   json lDevices = mJson["devices"];
-  mLogMgr->Info("Devices:\n%s\n", lDevices.dump());
+
+  for(auto &lDevice : lDevices.items())
+  {
+    mLogMgr->Info("Device: %s\n%s\n", lDevice.key().c_str(), lDevice.value().dump().c_str());
+  }
 
   mLogMgr->Trace("CfgMgr::parse_config - end\n");
   return true;
