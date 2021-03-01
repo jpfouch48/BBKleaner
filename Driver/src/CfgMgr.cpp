@@ -24,11 +24,12 @@ bool CfgMgr::parse_config()
   lStream >> mJson;
 
   // TODO: READ IN THE DEVICE TYPES AND STORE THEM
-  std::cout << mJson["device types"] << std::endl;
   json lDeviceTypes = mJson["device types"];
+  mLogMgr->Info("Device Type:\n%s\n", lDeviceTypes.dump());
   
   // TODO: READ IN THE DEVICES AND STORE THEM
-  json lDevices = mJson["device types"];
+  json lDevices = mJson["devices"];
+  mLogMgr->Info("Devices:\n%s\n", lDevices.dump());
 
   mLogMgr->Trace("CfgMgr::parse_config - end\n");
   return true;
