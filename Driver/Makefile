@@ -11,8 +11,7 @@ EXECUTABLE		:= Kleaner
 
 all: $(BIN)/$(EXECUTABLE)
 
-run: clean all
-	clear
+run: all
 	./$(BIN)/$(EXECUTABLE) ./$(BIN)/$(CFG_FILE) 
 
 $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
