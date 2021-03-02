@@ -10,9 +10,10 @@ CfgMgr *CfgMgr::gInstance(NULL);
 // ****************************************************************************
 //
 // ****************************************************************************
-CfgMgr::CfgMgr(const char* aCfgFileName) : mCfgFileName(aCfgFileName)
+CfgMgr::CfgMgr(const char* aCfgFileName) : 
+  mCfgFileName(aCfgFileName),
+  mLogMgr("CfgMgr")
 {
-  mLogMgr = LogMgr::get_instance();
 }
 
 
@@ -21,10 +22,10 @@ CfgMgr::CfgMgr(const char* aCfgFileName) : mCfgFileName(aCfgFileName)
 // ****************************************************************************
 bool CfgMgr::parse_config()
 {
-  mLogMgr->Trace("CfgMgr::parse_config(%s) - start\n", mCfgFileName);
+  mLogMgr.Trace("parse_config(%s) - start\n", mCfgFileName);
   std::ifstream lStream(mCfgFileName);
   lStream >> mJson;
-  mLogMgr->Trace("CfgMgr::parse_config - end\n");
+  mLogMgr.Trace("parse_config - end\n");
 
 
   if(false == parse_device_types())
@@ -44,21 +45,21 @@ bool CfgMgr::parse_device_types()
   // Verify device types exist
   if(false == mJson.contains("device types"))
   {
-    mLogMgr->Error("CfgMgr::parse_device_types() - no device types found\n");
+    mLogMgr.Error("parse_device_types() - no device types found\n");
     return false;
   }
 
   // Loop through each device type
   for(auto &lDeviceTypeCfg : mJson["device types"].items())
   {
-    mLogMgr->Info("CfgMgr::parse_device_types() - Device Type Config: %s\n\t%s\n", 
+    mLogMgr.Info("parse_device_types() - Device Type Config: %s\n\t%s\n", 
       lDeviceTypeCfg.key().c_str(), 
       lDeviceTypeCfg.value().dump().c_str());
 
     // Verify that this is a unique device type
     if(0 != mDeviceTypes.count(lDeviceTypeCfg.key()))
     {
-      mLogMgr->Error("CfgMgr::parse_device_types() - device type (%s) already exists\n", 
+      mLogMgr.Error("parse_device_types() - device type (%s) already exists\n", 
         lDeviceTypeCfg.key().c_str());
       return false;
     }
@@ -67,7 +68,7 @@ bool CfgMgr::parse_device_types()
     DeviceType *lDeviceType = new DeviceType(lDeviceTypeCfg.key());
     if(false == lDeviceType->parse_json(lDeviceTypeCfg.value()))
     {
-      mLogMgr->Error("CfgMgr::parse_device_types() - device type (%s) error parsing\n", 
+      mLogMgr.Error("parse_device_types() - device type (%s) error parsing\n", 
         lDeviceTypeCfg.key().c_str());
       delete lDeviceType;
       return false;
@@ -75,14 +76,14 @@ bool CfgMgr::parse_device_types()
 
     // Add devcie type to map
     mDeviceTypes.insert(DeviceTypePair_t(lDeviceTypeCfg.key(), lDeviceType));
-    mLogMgr->Info("CfgMgr::validate_config() - added %s\n", lDeviceTypeCfg.key().c_str());
+    mLogMgr.Info("validate_config() - added %s\n", lDeviceTypeCfg.key().c_str());
   }
   
 
   // Verify devices exist
   if(false == mJson.contains("devices"))
   {
-    mLogMgr->Error("CfgMgr::validate_config() - no devices found\n");
+    mLogMgr.Error("validate_config() - no devices found\n");
     return false;
   }
 
@@ -104,7 +105,7 @@ bool CfgMgr::parse_device_types()
 // ****************************************************************************
 CfgMgr *CfgMgr::create_instance(const char* aCfgFileName)
 {
-  std::cout << "LogMgr::create_instance - start" << std::endl;
+//  std::cout << "CfgMgr::create_instance - start" << std::endl;
 
   if(NULL == gInstance)
   {
@@ -112,7 +113,7 @@ CfgMgr *CfgMgr::create_instance(const char* aCfgFileName)
     return gInstance;
   }
 
-  std::cout << "LogMgr::create_instance - error - instance already created" << std::endl;
+  std::cout << "CfgMgr::create_instance - error - instance already created" << std::endl;
   // Instance already created, return NULL to indicate ERROR
   return NULL;
 }

@@ -1,9 +1,9 @@
 #pragma once
 
+#include "LogInstance.h"
 #include <map>
 
 class IOPinState;
-class LogMgr;
 
 // ****************************************************************************
 //
@@ -37,5 +37,5 @@ private:
   const char* mName;
   int mPinCount;
   std::map<const char*, IOPinState*> mPinStateMap;
-  LogMgr* mLogMgr;
+  LogInstance mLogMgr;
 };

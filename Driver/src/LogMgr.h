@@ -2,11 +2,11 @@
 
 #include <iostream>
 #include <queue>
+#include <string>
 
 class LogMgr
 {
 public:
-
   class LogMsg
   {
   public:
@@ -39,6 +39,7 @@ public:
     LogLevel       mMsgLevel;
     char           mMsg[MAX_MSG_SIZE];
     struct timeval mMsgTime;
+    const char    *mClassName;
   private:
   protected:
   };
@@ -50,11 +51,7 @@ public:
 
   void *thread_proc();
 
-  void Trace(const char *aFormat, ...);
-  void Info(const char *aFormat, ...);
-  void Warning(const char *aFormat, ...);
-  void Error(const char *aFormat, ...);
-  void Fatal(const char *aFormat, ...);
+  void Log(const char *aClassName, LogMsg::LogLevel aLevel, const char* aFormat, va_list aVaList);
 
 protected:
 
@@ -67,5 +64,25 @@ private:
   static LogMgr *gInstance;
   static pthread_t gMsgThread;
   static pthread_mutex_t mMsgQueueMutex;
+  static pthread_mutex_t mVaArgMutex;
+};
+
+class LogInst
+{
+public:
+  LogInst(std::string aClassName);
+  ~LogInst();
+
+  void Trace(const char *aFormat, ...);
+  void Info(const char *aFormat, ...);
+  void Warning(const char *aFormat, ...);
+  void Error(const char *aFormat, ...);
+  void Fatal(const char *aFormat, ...);
+
+protected:
+
+private:
+  std::string mClassName;
+  LogMgr *mLogMgr;
   static pthread_mutex_t mVaArgMutex;
 };

@@ -1,8 +1,8 @@
 #pragma once
 
+#include "LogInstance.h"
 #include <map>
 
-class LogMgr;
 
 // ****************************************************************************
 //
@@ -41,5 +41,5 @@ private:
   const char *mName;
   int mPinCount;
   std::map<int, int> mPinState;
-  LogMgr *mLogMgr;
+  LogInstance mLogMgr;
 };

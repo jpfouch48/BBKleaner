@@ -4,9 +4,85 @@
 #include <assert.h>
 #include <sys/time.h>
 
+pthread_mutex_t LogInst::mVaArgMutex;
+
+
 // ****************************************************************************
-// TODO: Make thread safe
+//
 // ****************************************************************************
+LogInst::LogInst(std::string aClassName) : mClassName(aClassName)
+{
+  mLogMgr = LogMgr::get_instance();      
+  pthread_mutex_init(&mVaArgMutex, NULL);
+}
+
+// ****************************************************************************
+//
+// ****************************************************************************
+LogInst::~LogInst()
+{      
+}
+
+// ****************************************************************************
+//
+// ****************************************************************************
+void LogInst::Trace(const char *aFormat, ...)
+{
+  pthread_mutex_lock(&mVaArgMutex);
+  va_list lVaList;
+  va_start(lVaList, aFormat);
+  mLogMgr->Log(mClassName.c_str(), LogMgr::LogMsg::LogLevel::Trace, aFormat, lVaList);
+  pthread_mutex_unlock(&mVaArgMutex); 
+}
+
+// ****************************************************************************
+//
+// ****************************************************************************
+void LogInst::Info(const char *aFormat, ...)
+{
+  pthread_mutex_lock(&mVaArgMutex);
+  va_list lVaList;
+  va_start(lVaList, aFormat);
+  mLogMgr->Log(mClassName.c_str(), LogMgr::LogMsg::LogLevel::Info, aFormat, lVaList);
+  pthread_mutex_unlock(&mVaArgMutex); 
+}
+
+// ****************************************************************************
+//
+// ****************************************************************************
+void LogInst::Warning(const char *aFormat, ...)
+{
+  pthread_mutex_lock(&mVaArgMutex);
+  va_list lVaList;
+  va_start(lVaList, aFormat);
+  mLogMgr->Log(mClassName.c_str(), LogMgr::LogMsg::LogLevel::Warning, aFormat, lVaList);
+  pthread_mutex_unlock(&mVaArgMutex); 
+}
+
+// ****************************************************************************
+//
+// ****************************************************************************
+void LogInst::Error(const char *aFormat, ...)
+{
+  pthread_mutex_lock(&mVaArgMutex);
+  va_list lVaList;
+  va_start(lVaList, aFormat);
+  mLogMgr->Log(mClassName.c_str(), LogMgr::LogMsg::LogLevel::Error, aFormat, lVaList);
+  pthread_mutex_unlock(&mVaArgMutex); 
+
+}
+
+// ****************************************************************************
+//
+// ****************************************************************************
+void LogInst::Fatal(const char *aFormat, ...)
+{
+  pthread_mutex_lock(&mVaArgMutex);
+  va_list lVaList;
+  va_start(lVaList, aFormat);
+  mLogMgr->Log(mClassName.c_str(), LogMgr::LogMsg::LogLevel::Fatal, aFormat, lVaList);
+  pthread_mutex_unlock(&mVaArgMutex); 
+}
 
 // ****************************************************************************
 // Static declarations
@@ -30,106 +106,14 @@ static void *thread_proc_helper(void *aContext)
 // ****************************************************************************
 //
 // ****************************************************************************
-void LogMgr::Trace(const char *aFormat, ...)
+void LogMgr::Log(const char *aClassName, LogMsg::LogLevel aLevel, const char* aFormat, va_list aVaList)
 {
   LogMsg *lMsg = new LogMsg();
   gettimeofday(&lMsg->mMsgTime, NULL);
-  lMsg->mMsgLevel = LogMsg::LogLevel::Trace;
+  lMsg->mMsgLevel = aLevel;
+  lMsg->mClassName = aClassName;
 
-  pthread_mutex_lock(&mVaArgMutex);
-  va_list lVaList;
-  va_start(lVaList, aFormat);
-  int lRc = vsnprintf(lMsg->mMsg, LogMsg::MAX_MSG_SIZE, aFormat, lVaList);
-  pthread_mutex_unlock(&mVaArgMutex);
-
-  assert(lRc != -1 && lRc < LogMsg::MAX_MSG_SIZE);
-
-  pthread_mutex_lock(&mMsgQueueMutex);
-  mMsgQueue.push(lMsg);
-  pthread_mutex_unlock(&mMsgQueueMutex);  
-}
-
-// ****************************************************************************
-//
-// ****************************************************************************
-void LogMgr::Info(const char *aFormat, ...)
-{
-  LogMsg *lMsg = new LogMsg();
-  gettimeofday(&lMsg->mMsgTime, NULL);
-  lMsg->mMsgLevel = LogMsg::LogLevel::Info;
-
-  pthread_mutex_lock(&mVaArgMutex);
-  va_list lVaList;
-  va_start(lVaList, aFormat);
-  int lRc = vsnprintf(lMsg->mMsg, LogMsg::MAX_MSG_SIZE, aFormat, lVaList);
-  pthread_mutex_unlock(&mVaArgMutex);
-
-  assert(lRc != -1 && lRc < LogMsg::MAX_MSG_SIZE);
-
-  pthread_mutex_lock(&mMsgQueueMutex);
-  mMsgQueue.push(lMsg);
-  pthread_mutex_unlock(&mMsgQueueMutex);  
-}
-
-// ****************************************************************************
-//
-// ****************************************************************************
-void LogMgr::Warning(const char *aFormat, ...)
-{
-  LogMsg *lMsg = new LogMsg();
-  gettimeofday(&lMsg->mMsgTime, NULL);
-  lMsg->mMsgLevel = LogMsg::LogLevel::Warning;
-
-  pthread_mutex_lock(&mVaArgMutex);
-  va_list lVaList;
-  va_start(lVaList, aFormat);
-  int lRc = vsnprintf(lMsg->mMsg, LogMsg::MAX_MSG_SIZE, aFormat, lVaList);
-  pthread_mutex_unlock(&mVaArgMutex);
-
-  assert(lRc != -1 && lRc < LogMsg::MAX_MSG_SIZE);
-
-  pthread_mutex_lock(&mMsgQueueMutex);
-  mMsgQueue.push(lMsg);
-  pthread_mutex_unlock(&mMsgQueueMutex);  
-}
-
-// ****************************************************************************
-//
-// ****************************************************************************
-void LogMgr::Error(const char *aFormat, ...)
-{
-  LogMsg *lMsg = new LogMsg();
-  gettimeofday(&lMsg->mMsgTime, NULL);
-  lMsg->mMsgLevel = LogMsg::LogLevel::Error;
-
-  pthread_mutex_lock(&mVaArgMutex);
-  va_list lVaList;
-  va_start(lVaList, aFormat);
-  int lRc = vsnprintf(lMsg->mMsg, LogMsg::MAX_MSG_SIZE, aFormat, lVaList);
-  pthread_mutex_unlock(&mVaArgMutex);
-
-  assert(lRc != -1 && lRc < LogMsg::MAX_MSG_SIZE);
-
-  pthread_mutex_lock(&mMsgQueueMutex);
-  mMsgQueue.push(lMsg);
-  pthread_mutex_unlock(&mMsgQueueMutex);  
-}
-
-// ****************************************************************************
-//
-// ****************************************************************************
-void LogMgr::Fatal(const char *aFormat, ...)
-{
-  LogMsg *lMsg = new LogMsg();
-  gettimeofday(&lMsg->mMsgTime, NULL);
-  lMsg->mMsgLevel = LogMsg::LogLevel::Fatal;
-
-  pthread_mutex_lock(&mVaArgMutex);
-  va_list lVaList;
-  va_start(lVaList, aFormat);
-  int lRc = vsnprintf(lMsg->mMsg, LogMsg::MAX_MSG_SIZE, aFormat, lVaList);
-  pthread_mutex_unlock(&mVaArgMutex);
-
+  int lRc = vsnprintf(lMsg->mMsg, LogMsg::MAX_MSG_SIZE, aFormat, aVaList);
   assert(lRc != -1 && lRc < LogMsg::MAX_MSG_SIZE);
 
   pthread_mutex_lock(&mMsgQueueMutex);
@@ -179,8 +163,6 @@ LogMgr *LogMgr::get_instance()
 // ****************************************************************************
 void * LogMgr::thread_proc()
 {
-  Trace("LogMgr::thread_proc - start\v");
-
   while(mRunning)
   {
     pthread_mutex_lock(&mMsgQueueMutex);
@@ -201,6 +183,10 @@ void * LogMgr::thread_proc()
         snprintf(lTimeBuf, 20, "%ld.%06ld", lMsg->mMsgTime.tv_sec, lMsg->mMsgTime.tv_usec);
         std::cout << lTimeBuf << ": ";
         std::cout << lMsg->get_log_level_string();
+
+        if(NULL != lMsg->mClassName)
+          std::cout << lMsg->mClassName << "::";
+
         std::cout << lMsg->mMsg;
 
         if(NULL != lMsg)
@@ -221,8 +207,6 @@ void * LogMgr::thread_proc()
       usleep(100);
     }
   }
-
-//  std::cout << "LogMgr::thread_proc - finished" << std::endl;
 
   return NULL;
 }
