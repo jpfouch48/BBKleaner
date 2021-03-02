@@ -66,23 +66,3 @@ private:
   static pthread_mutex_t mMsgQueueMutex;
   static pthread_mutex_t mVaArgMutex;
 };
-
-class LogInst
-{
-public:
-  LogInst(std::string aClassName);
-  ~LogInst();
-
-  void Trace(const char *aFormat, ...);
-  void Info(const char *aFormat, ...);
-  void Warning(const char *aFormat, ...);
-  void Error(const char *aFormat, ...);
-  void Fatal(const char *aFormat, ...);
-
-protected:
-
-private:
-  std::string mClassName;
-  LogMgr *mLogMgr;
-  static pthread_mutex_t mVaArgMutex;
-};
