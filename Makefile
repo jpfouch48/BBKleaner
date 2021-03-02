@@ -15,8 +15,10 @@ all: bin_dir $(BIN_PATH)/$(EXECUTABLE)
 run: all
 	./$(BIN_PATH)/$(EXECUTABLE) ./$(BIN_PATH)/$(CFG_FILENAME) 
 
-$(BIN_PATH)/$(EXECUTABLE): $(SRC_PATH)/*.cpp
+$(BIN_PATH)/$(EXECUTABLE): $(SRC_PATH)/*.cpp 
 	$(CXX) $(CXX_FLAGS) -I$(INCLUDE_PATH) $^ -o $@ $(LIBRARIES)
+
+$(DRIVER_PATH)/$(CFG_FILENAME):
 	cp $(DRIVER_PATH)/$(CFG_FILENAME) $(BIN_PATH)/$(CFG_FILENAME)
 
 clean:
@@ -24,3 +26,4 @@ clean:
 
 bin_dir:
 	mkdir -p $(BIN_PATH)
+	cp $(DRIVER_PATH)/$(CFG_FILENAME) $(BIN_PATH)/$(CFG_FILENAME)
