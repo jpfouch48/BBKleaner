@@ -40,6 +40,7 @@ bool Device::parse_json(const json &aCfg)
     mLogMgr.Error("parse_json(%s) - %s not found in configured device types\n", mName.c_str(), aCfg["type"]);
     return false;
   }
+  mDeviceType = lDeviceType;
 
   if(false == aCfg.contains("pins"))
   {
@@ -52,6 +53,12 @@ bool Device::parse_json(const json &aCfg)
   {
     mLogMgr.Info("parse_json(%s) - added pin %d\n", mName.c_str(), lPin.value().get<int>());
     mPins.push_back(lPin.value().get<int>());
+  }
+
+  if(mPins.size() != mDeviceType->get_num_pins())
+  {
+    mLogMgr.Error("parse_json(%s) - pin count mismatch\n", mName.c_str());
+    return false;
   }
 
   return true;

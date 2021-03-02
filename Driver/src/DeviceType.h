@@ -15,7 +15,7 @@ public:
   ~DeviceType();
 
   void set_num_pins(int aNumPins) { mNumPins = aNumPins; }
-  int  get_num_pins()             { return mNumPins; }
+  int  get_num_pins() const       { return mNumPins; }
 
   bool create_pin_state(std::string aStateName);
   bool add_pin_state(std::string aStateName, int aState);
