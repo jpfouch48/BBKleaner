@@ -13,7 +13,7 @@ EXECUTABLE		:= Kleaner
 all: bin_dir $(BIN_PATH)/$(EXECUTABLE)
 
 run: all
-	./$(BIN_PATH)/$(EXECUTABLE) ./$(BIN_PATH)/$(CFG_FILE) 
+	./$(BIN_PATH)/$(EXECUTABLE) ./$(BIN_PATH)/$(CFG_FILENAME) 
 
 $(BIN_PATH)/$(EXECUTABLE): $(SRC_PATH)/*.cpp
 	$(CXX) $(CXX_FLAGS) -I$(INCLUDE_PATH) $^ -o $@ $(LIBRARIES)

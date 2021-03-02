@@ -1,5 +1,7 @@
 #include "CfgMgr.h"
 #include "LogMgr.h"
+#include "DeviceType.h"
+
 #include <iostream>
 #include <fstream>
 
@@ -23,28 +25,75 @@ bool CfgMgr::parse_config()
   std::ifstream lStream(mCfgFileName);
   lStream >> mJson;
   mLogMgr->Trace("CfgMgr::parse_config - end\n");
-  return validate_config();;
+
+
+  if(false == parse_device_types())
+    return false;
+
+
+  return true;
 }
 
 // ****************************************************************************
 //
 // ****************************************************************************
-bool CfgMgr::validate_config()
+bool CfgMgr::parse_device_types()
 {
   bool lRc = true;
 
-  json lDeviceTypes = mJson["device types"];
-  json lDevices = mJson["devices"];
-
-  for(auto &lDeviceType : lDeviceTypes.items())
+  // Verify device types exist
+  if(false == mJson.contains("device types"))
   {
-    mLogMgr->Info("Device Type: %s\n%s\n", lDeviceType.key().c_str(), lDeviceType.value().dump().c_str());
+    mLogMgr->Error("CfgMgr::parse_device_types() - no device types found\n");
+    return false;
+  }
+
+  // Loop through each device type
+  for(auto &lDeviceTypeCfg : mJson["device types"].items())
+  {
+    mLogMgr->Info("CfgMgr::parse_device_types() - Device Type Config: %s\n\t%s\n", 
+      lDeviceTypeCfg.key().c_str(), 
+      lDeviceTypeCfg.value().dump().c_str());
+
+    // Verify that this is a unique device type
+    if(0 != mDeviceTypes.count(lDeviceTypeCfg.key()))
+    {
+      mLogMgr->Error("CfgMgr::parse_device_types() - device type (%s) already exists\n", 
+        lDeviceTypeCfg.key().c_str());
+      return false;
+    }
+
+    // Create the device type and parse
+    DeviceType *lDeviceType = new DeviceType(lDeviceTypeCfg.key());
+    if(false == lDeviceType->parse_json(lDeviceTypeCfg.value()))
+    {
+      mLogMgr->Error("CfgMgr::parse_device_types() - device type (%s) error parsing\n", 
+        lDeviceTypeCfg.key().c_str());
+      delete lDeviceType;
+      return false;
+    }
+
+    // Add devcie type to map
+    mDeviceTypes.insert(DeviceTypePair_t(lDeviceTypeCfg.key(), lDeviceType));
+    mLogMgr->Info("CfgMgr::validate_config() - added %s\n", lDeviceTypeCfg.key().c_str());
   }
   
-  for(auto &lDevice : lDevices.items())
+
+  // Verify devices exist
+  if(false == mJson.contains("devices"))
   {
-    mLogMgr->Info("Device: %s\n%s\n", lDevice.key().c_str(), lDevice.value().dump().c_str());
+    mLogMgr->Error("CfgMgr::validate_config() - no devices found\n");
+    return false;
   }
+
+
+  // Loop through each device
+//  for(auto &lDeviceCfg : mJson["devices"].items())
+//  {
+//    mLogMgr->Info("Device Config: %s\n%s\n", 
+//      lDeviceCfg.key().c_str(), 
+//      lDeviceCfg.value().dump().c_str());
+//  }
 
   return lRc;
 }

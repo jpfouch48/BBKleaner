@@ -21,9 +21,9 @@ pthread_mutex_t LogMgr::mVaArgMutex;
 // ****************************************************************************
 static void *thread_proc_helper(void *aContext)
 {  
-  std::cout << "thread_proc_helper - start" << std::endl;
+//  std::cout << "thread_proc_helper - start" << std::endl;
   void *lRc = ((LogMgr*)aContext)->thread_proc();
-  std::cout << "thread_proc_helper - end" << std::endl;
+//  std::cout << "thread_proc_helper - end" << std::endl;
   return lRc;
 }
 
@@ -142,7 +142,7 @@ void LogMgr::Fatal(const char *aFormat, ...)
 // ****************************************************************************
 LogMgr *LogMgr::create_instance()
 {
-  std::cout << "LogMgr::create_instance - start" << std::endl;
+//  std::cout << "LogMgr::create_instance - start" << std::endl;
 
   if(NULL == gInstance)
   {
@@ -152,7 +152,7 @@ LogMgr *LogMgr::create_instance()
     pthread_mutex_init(&mVaArgMutex, NULL);
 
     pthread_create(&gMsgThread, NULL, &thread_proc_helper, gInstance);
-    std::cout << "LogMgr::create_instance - finished" << std::endl;
+//    std::cout << "LogMgr::create_instance - finished" << std::endl;
     return gInstance;
   }
 

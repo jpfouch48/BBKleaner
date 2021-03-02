@@ -6,18 +6,18 @@
   "device types": {
     "relay" : {
         "num pins" : 1, 
-        "states": {
-            "open":  { "pin values": [ 0 ] },
-            "close": { "pin values": [ 1 ] }
+        "pin states": {
+            "open":  [ 0 ],
+            "close": [ 1 ]
           }
         },
     
     "ball valve": {
         "num pins" : 2, 
-        "states": {
-            "open":  { "pin values": [ 1, 0 ] },
-            "close": { "pin values": [ 0, 1 ] },
-            "idle":  { "pin values": [ 0, 0 ] }
+        "pin states": {
+            "open":  [ 1, 0 ],
+            "close": [ 0, 1 ],
+            "idle":  [ 0, 0 ]
         }
       }
     },
