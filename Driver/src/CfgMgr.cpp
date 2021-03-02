@@ -19,28 +19,34 @@ CfgMgr::CfgMgr(const char* aCfgFileName) : mCfgFileName(aCfgFileName)
 // ****************************************************************************
 bool CfgMgr::parse_config()
 {
-  mLogMgr->Trace("CfgMgr::parse_config - start\n");
+  mLogMgr->Trace("CfgMgr::parse_config(%s) - start\n", mCfgFileName);
   std::ifstream lStream(mCfgFileName);
   lStream >> mJson;
+  mLogMgr->Trace("CfgMgr::parse_config - end\n");
+  return validate_config();;
+}
 
-  // TODO: READ IN THE DEVICE TYPES AND STORE THEM
+// ****************************************************************************
+//
+// ****************************************************************************
+bool CfgMgr::validate_config()
+{
+  bool lRc = true;
+
   json lDeviceTypes = mJson["device types"];
+  json lDevices = mJson["devices"];
 
   for(auto &lDeviceType : lDeviceTypes.items())
   {
     mLogMgr->Info("Device Type: %s\n%s\n", lDeviceType.key().c_str(), lDeviceType.value().dump().c_str());
   }
   
-  // TODO: READ IN THE DEVICES AND STORE THEM
-  json lDevices = mJson["devices"];
-
   for(auto &lDevice : lDevices.items())
   {
     mLogMgr->Info("Device: %s\n%s\n", lDevice.key().c_str(), lDevice.value().dump().c_str());
   }
 
-  mLogMgr->Trace("CfgMgr::parse_config - end\n");
-  return true;
+  return lRc;
 }
 
 

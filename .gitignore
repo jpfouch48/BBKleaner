@@ -31,5 +31,8 @@
 *.out
 *.app
 
+# .vscode Files - refine if files in here are needed
+.vscode/*
+
 # Directories
-Driver/bin/*
+bin/*

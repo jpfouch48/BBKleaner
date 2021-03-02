@@ -21,6 +21,7 @@ protected:
 
 private:
   CfgMgr(const char* aCfgFileName);
+  bool validate_config();
 
   json mJson;
   LogMgr *mLogMgr;
