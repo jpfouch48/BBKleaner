@@ -152,6 +152,8 @@ bool CfgMgr::parse_devices()
     // Add devcie type to map
     mDevices.insert(DevicePair_t(lDeviceCfg.key(), lDevice));
     mLogMgr.Info("parse_devices() - added %s\n", lDeviceCfg.key().c_str());    
+
+    mLogMgr.Info("\n%s\n", lDevice->toString().c_str());    
   }
 
   return true;

@@ -1,4 +1,6 @@
 #include "DeviceType.h"
+#include <ostream>
+#include <iomanip>
 
 // ****************************************************************************
 //
@@ -109,3 +111,24 @@ bool DeviceType::parse_json(const json &aCfg)
   return true;
 }
 
+// ****************************************************************************
+//
+// ****************************************************************************
+std::string DeviceType::toString() const
+{
+  std::ostringstream lStr;
+  lStr << "Device Type: " << get_name() << std::endl;
+
+  lStr << "Pin States: [" << std::endl;  
+  for(auto lPinState : get_pin_states())
+  {
+    lStr << std::setw(8) << lPinState.first << " [";
+    for(auto lState : lPinState.second)
+    {
+      lStr << " " << lState;
+    }
+    lStr << " ]" << std::endl;    
+  }
+  lStr << "]" << std::endl;
+  return lStr.str();
+}

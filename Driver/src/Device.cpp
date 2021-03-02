@@ -27,7 +27,6 @@ bool Device::parse_json(const json &aCfg)
 {
   CfgMgr *lCfgMgr = CfgMgr::get_instance();
 
-  // "Sanitizer In":  { "type": "ball valve", "pins": [ 14, 15 ] },
   if(false == aCfg.contains("type"))
   {
     mLogMgr.Error("parse_json(%s) - 'type' not found\n", mName.c_str());
@@ -62,4 +61,21 @@ bool Device::parse_json(const json &aCfg)
   }
 
   return true;
+}
+
+// ****************************************************************************
+//
+// ****************************************************************************
+std::string Device::toString() const
+{
+  std::ostringstream lStr;
+  lStr << "Device: " << get_name() << std::endl;
+  lStr << get_device_type()->toString();
+  lStr << "Pins: [";  
+  for(auto lPin : get_pins())
+  {
+    lStr << " " << lPin;
+  }
+  lStr << " ]" << std::endl;
+  return lStr.str();  
 }
