@@ -15,7 +15,6 @@ DeviceType::DeviceType(std::string aName) :
 // ****************************************************************************
 DeviceType::~DeviceType()
 {
-
 }
 
 // ****************************************************************************
@@ -23,6 +22,19 @@ DeviceType::~DeviceType()
 // ****************************************************************************
 bool DeviceType::create_pin_state(std::string aStateName)
 {
+  // Verify that this is a unique pin state
+  if(0 != mPinStates.count(aStateName))
+  {
+    mLogMgr.Error("create_pin_state() - state (%s) already exists\n", 
+      aStateName.c_str());
+    return false;
+  }
+
+  mLogMgr.Info("add_pin_state() - state (%s) added\n", 
+    aStateName.c_str());
+
+  mPinStates.insert(PinStatePair_t(aStateName, PinArray_t()));
+
   return true;
 }
 
@@ -31,6 +43,19 @@ bool DeviceType::create_pin_state(std::string aStateName)
 // ****************************************************************************
 bool DeviceType::add_pin_state(std::string aStateName, int aState)
 {
+  // Verify that the state exists
+  if(0 == mPinStates.count(aStateName))
+  {
+    mLogMgr.Error("add_pin_state() - state (%s) does not exists\n", 
+      aStateName.c_str());
+    return false;
+  }
+
+  mLogMgr.Info("add_pin_state() - state (%s) added %d\n", 
+    aStateName.c_str(), aState);
+
+  mPinStates[aStateName].push_back(aState);
+ 
   return true;
 }
 
@@ -77,7 +102,7 @@ bool DeviceType::parse_json(const json &aCfg)
 
     for(auto &lPinValue : lDeviceTypeState.value().items())
     {
-      add_pin_state(lDeviceTypeState.key(), lPinValue.value());
+      add_pin_state(lDeviceTypeState.key(), lPinValue.value().get<int>());
     }
   }
 

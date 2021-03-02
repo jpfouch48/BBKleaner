@@ -11,7 +11,6 @@ using json = nlohmann::json;
 class DeviceType
 {
 public:
-  static const int MAX_PINS = 4;
   DeviceType(std::string aName);
   ~DeviceType();
 
@@ -28,8 +27,11 @@ protected:
 private:
   std::string mName;
   int mNumPins;
-  LogInstance mLogMgr;
-  using PinStateMap_t = std::map<std::string, std::array<int, MAX_PINS>>;
-  using PinStatePair_t = std::pair<std::string, std::array<int, MAX_PINS>>;
+
+  using PinArray_t = std::vector<int>;
+  using PinStateMap_t = std::map<std::string, PinArray_t>;
+  using PinStatePair_t = std::pair<std::string, PinArray_t>;
   PinStateMap_t mPinStates;
+
+  LogInstance mLogMgr;
 };
