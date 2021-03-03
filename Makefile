@@ -1,4 +1,9 @@
 PROJECT=.\\Driver\\Kleaner
+PROJECT_CFG=.\\Driver\\KleanerConfig.json
+
+TARGET_IP=192.168.7.2
+TARGET_DIR=kleaner
+TARGET_USER=debian
 
 # Two additional CFLAGS must be used for Angstrom
 # They must not be used for Debian or Ubuntu. I couldn't find out why. 
@@ -34,6 +39,7 @@ COBJ = \
 # gcc binaries to use
 CC = "C:\bin\gcc-linaro-7.5.0-2019\bin\arm-linux-gnueabihf-g++.exe"
 LD = "C:\bin\gcc-linaro-7.5.0-2019\bin\arm-linux-gnueabihf-g++.exe"
+SCP = "C:\bin\Putty\pscp.exe"
 
 SHELL = cmd
 REMOVE = del /F
@@ -54,6 +60,9 @@ CFLAGS += $(CDEFINE)
 
 # Our favourite
 all: $(PROJECT)
+
+deploy: all
+	$(SCP) $(PROJECT) $(PROJECT_CFG) $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR)
 
 # Linker call
 $(PROJECT): $(COBJ)
