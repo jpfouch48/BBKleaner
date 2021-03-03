@@ -1,29 +1,69 @@
-CXX						:= g++
-CXX_FLAGS			:= -std=c++17 -ggdb
+PROJECT=Kleaner
 
-DRIVER_PATH		:= Driver
-BIN_PATH			:= bin
-SRC_PATH			:= $(DRIVER_PATH)/src
-INCLUDE_PATH	:= $(DRIVER_PATH)/src
-CFG_FILENAME  := KleanerConfig.json
+# Two additional CFLAGS must be used for Angstrom
+# They must not be used for Debian or Ubuntu. I couldn't find out why. 
+# The hint came from C:\gcc-linaro\share\doc\gcc-linaro-arm-linux-gnueabihf\README.txt 
+#
+# Uncomment the following line if you use Angstrom on your BeagleBone
+#TARGET=angstrom
 
-LIBRARIES			:= -lpthread
-EXECUTABLE		:= Kleaner
+# Directory for includes
+CSOURCE = .\\Driver\\src
+CINCLUDE = $(CSOURCE)
 
-all: bin_dir $(BIN_PATH)/$(EXECUTABLE)
+# Directory for Cpp-Source
+vpath %.cpp $(CSOURCE)
 
-run: all
-	./$(BIN_PATH)/$(EXECUTABLE) ./$(BIN_PATH)/$(CFG_FILENAME) 
+# Directory for object files
+OBJDIR = .\\Driver\\bin
 
-$(BIN_PATH)/$(EXECUTABLE): $(SRC_PATH)/*.cpp 
-	$(CXX) $(CXX_FLAGS) -I$(INCLUDE_PATH) $^ -o $@ $(LIBRARIES)
+# Other dependencies
+DEPS = \
+ Makefile 
 
-$(DRIVER_PATH)/$(CFG_FILENAME):
-	cp $(DRIVER_PATH)/$(CFG_FILENAME) $(BIN_PATH)/$(CFG_FILENAME)
+# Compiler object files 
+COBJ = \
+ $(OBJDIR)/$(PROJECT).o \
+ $(OBJDIR)/CfgMgr.o \
+ $(OBJDIR)/Device.o \
+ $(OBJDIR)/DeviceType.o \
+ $(OBJDIR)/Driver.o \
+ $(OBJDIR)/LogInstance.o \
+ $(OBJDIR)/LogMgr.o 
+
+# gcc binaries to use
+CC = "C:\bin\gcc-linaro-7.5.0-2019\bin\arm-linux-gnueabihf-g++.exe"
+LD = "C:\bin\gcc-linaro-7.5.0-2019\bin\arm-linux-gnueabihf-g++.exe"
+
+SHELL = cmd
+REMOVE = del /F
+
+# Compiler options
+# Two additional flags neccessary for Angstrom Linux. Don't use them with Ubuntu or Debian  
+CFLAGS = -marm
+ifeq ($(TARGET),angstrom)
+CFLAGS += -march=armv4t
+CFLAGS += -mfloat-abi=soft
+endif
+CFLAGS += -O0 
+CFLAGS += -g 
+CFLAGS += -I.
+CFLAGS += -lpthread
+CFLAGS += -I$(CINCLUDE)
+CFLAGS += $(CDEFINE)
+
+# Our favourite
+all: $(PROJECT)
+
+# Linker call
+$(PROJECT): $(COBJ)
+	$(LD) -o $@ $^ $(CFLAGS)
+
+# Compiler call
+$(COBJ): $(OBJDIR)/%.o: %.cpp $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
 clean:
-	-rm $(BIN_PATH)/*
+	$(REMOVE) $(PROJECT)
+	$(REMOVE) $(OBJDIR)\\*.o
 
-bin_dir:
-	mkdir -p $(BIN_PATH)
-	cp $(DRIVER_PATH)/$(CFG_FILENAME) $(BIN_PATH)/$(CFG_FILENAME)
