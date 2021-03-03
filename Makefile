@@ -1,4 +1,4 @@
-PROJECT=Kleaner
+PROJECT=.\\Driver\\Kleaner
 
 # Two additional CFLAGS must be used for Angstrom
 # They must not be used for Debian or Ubuntu. I couldn't find out why. 
@@ -23,7 +23,7 @@ DEPS = \
 
 # Compiler object files 
 COBJ = \
- $(OBJDIR)/$(PROJECT).o \
+ $(OBJDIR)/Kleaner.o \
  $(OBJDIR)/CfgMgr.o \
  $(OBJDIR)/Device.o \
  $(OBJDIR)/DeviceType.o \
