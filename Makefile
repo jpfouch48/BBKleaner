@@ -13,11 +13,12 @@ TARGET_USER=debian
 #TARGET=angstrom
 
 # Directory for includes
-CSOURCE = .\\Driver\\src
-CINCLUDE = $(CSOURCE)
+SOURCE = .\\Driver\\src
+INCLUDES = -I. -I$(SOURCE) 
+	
 
 # Directory for Cpp-Source
-vpath %.cpp $(CSOURCE)
+vpath %.cpp $(SOURCE)
 
 # Directory for object files
 OBJDIR = .\\Driver\\bin
@@ -30,11 +31,13 @@ DEPS = \
 COBJ = \
  $(OBJDIR)/Kleaner.o \
  $(OBJDIR)/CfgMgr.o \
+ $(OBJDIR)/CommMgr.o \
  $(OBJDIR)/Device.o \
  $(OBJDIR)/DeviceType.o \
  $(OBJDIR)/Driver.o \
  $(OBJDIR)/LogInstance.o \
  $(OBJDIR)/LogMgr.o 
+ 
 
 # gcc binaries to use
 CC = "C:\bin\gcc-linaro-7.5.0-2019\bin\arm-linux-gnueabihf-g++.exe"
@@ -55,10 +58,8 @@ endif
 CFLAGS += -Wno-psabi
 CFLAGS += -O0 
 CFLAGS += -g 
-CFLAGS += -I.
 CFLAGS += -lpthread
-CFLAGS += -I$(CINCLUDE)
-CFLAGS += $(CDEFINE)
+CFLAGS += $(INCLUDES)
 
 # Our favourite
 all: $(OBJDIR) $(PROJECT)
