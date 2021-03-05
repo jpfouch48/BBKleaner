@@ -4,7 +4,7 @@ CXX_FLAGS			:= -std=c++17 -ggdb
 DRIVER_PATH		:= Driver
 BIN_PATH			:= bin
 SRC_PATH			:= $(DRIVER_PATH)/src
-INCLUDE_PATH	:= $(DRIVER_PATH)/src
+INCLUDE_PATH	:= -I$(DRIVER_PATH)/src -I~/server/node_modules/streaming-worker-sdk/
 CFG_FILENAME  := KleanerConfig.json
 
 LIBRARIES			:= -lpthread
@@ -16,7 +16,7 @@ run: all
 	./$(BIN_PATH)/$(EXECUTABLE) ./$(BIN_PATH)/$(CFG_FILENAME) 
 
 $(BIN_PATH)/$(EXECUTABLE): $(SRC_PATH)/*.cpp 
-	$(CXX) $(CXX_FLAGS) -I$(INCLUDE_PATH) $^ -o $@ $(LIBRARIES)
+	$(CXX) $(CXX_FLAGS) $(INCLUDE_PATH) $^ -o $@ $(LIBRARIES)
 
 $(DRIVER_PATH)/$(CFG_FILENAME):
 	cp $(DRIVER_PATH)/$(CFG_FILENAME) $(BIN_PATH)/$(CFG_FILENAME)
