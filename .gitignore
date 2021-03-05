@@ -33,6 +33,3 @@
 
 # .vscode Files - refine if files in here are needed
 .vscode/*
-
-# Don't put the binary in the repo
-Driver/kleaner

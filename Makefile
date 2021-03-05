@@ -1,13 +1,17 @@
-PROJECT=.\\bin\\kleaner
-PROJECT_CFG=.\\Driver\\KleanerConfig.json
+PROJECT=./bin/kleaner
+PROJECT_CFG=./cfg/KleanerConfig.json
+PROJECT_SVR=./server/*
 
 TARGET_IP=192.168.7.2
-TARGET_DIR=kleaner
 TARGET_USER=ubuntu
+TARGET_DIR=.
+TARGET_DIR_BIN=$(TARGET_DIR)/bin
+TARGET_DIR_CFG=$(TARGET_DIR)/cfg
+TARGET_DIR_SVR=$(TARGET_DIR)/server
 
 # Directory for includes
-SOURCE = .\\Driver\\src
-EXTERNAL = .\\Driver\\external
+SOURCE = ./Driver/src
+EXTERNAL = ./Driver/external
 INCLUDES = -I. \
 	-I$(SOURCE) \
 	-I$(EXTERNAL)
@@ -17,7 +21,7 @@ INCLUDES = -I. \
 vpath %.cpp $(SOURCE)
 
 # Directory for object files
-OBJDIR = .\\Driver\\bin
+OBJDIR = ./Driver/obj
 
 # Other dependencies
 DEPS = \
@@ -36,13 +40,21 @@ COBJ = \
  
 
 # gcc binaries to use
-CC = "C:\bin\gcc-linaro-7.5.0-2019\bin\arm-linux-gnueabihf-g++.exe"
-LD = "C:\bin\gcc-linaro-7.5.0-2019\bin\arm-linux-gnueabihf-g++.exe"
-SCP = "C:\bin\Putty\pscp.exe"
+ifeq ($(OS),Windows_NT)
+	CC = "C:\bin\gcc-linaro-7.5.0-2019\bin\arm-linux-gnueabihf-g++.exe"
+	LD = "C:\bin\gcc-linaro-7.5.0-2019\bin\arm-linux-gnueabihf-g++.exe"
+	SCP = "C:\bin\Putty\pscp.exe"
+	REMOVE = del /F
+	MKDIR = mkdir
+else
+	CC = arm-linux-gnueabihf-g++
+	LD = arm-linux-gnueabihf-g++
+	SCP = scp
+	REMOVE = rm -rf
+	MKDIR = mkdir
+endif
 
-SHELL = cmd
-REMOVE = del /F
-MKDIR = mkdir
+
 
 # Compiler options
 # Two additional flags neccessary for Angstrom Linux. Don't use them with Ubuntu or Debian  
@@ -64,7 +76,10 @@ $(OBJDIR):
 	$(MKDIR) $(OBJDIR)
 
 deploy: all
-	$(SCP) $(PROJECT) $(PROJECT_CFG) $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR)
+	$(SCP) $(PROJECT) $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR_BIN)
+	$(SCP) $(PROJECT).sh $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR)
+	$(SCP) $(PROJECT_CFG) $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR_CFG)
+	$(SCP) $(PROJECT_SVR) $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR_SVR)
 
 # Linker call
 $(PROJECT): $(COBJ)
@@ -75,6 +90,6 @@ $(COBJ): $(OBJDIR)/%.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 clean:
-	$(REMOVE) $(PROJECT)
-	$(REMOVE) $(OBJDIR)\\*.o
+	$(REMOVE) '$(PROJECT)'
+	$(REMOVE) '$(OBJDIR)'
 
