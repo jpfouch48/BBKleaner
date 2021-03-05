@@ -35,4 +35,4 @@
 .vscode/*
 
 # Don't put the binary in the repo
-Driver/Kleaner
+Driver/kleaner

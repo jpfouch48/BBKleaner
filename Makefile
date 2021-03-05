@@ -1,4 +1,4 @@
-PROJECT=.\\Driver\\Kleaner
+PROJECT=.\\Driver\\kleaner
 PROJECT_CFG=.\\Driver\\KleanerConfig.json
 
 TARGET_IP=192.168.7.2
@@ -43,6 +43,7 @@ SCP = "C:\bin\Putty\pscp.exe"
 
 SHELL = cmd
 REMOVE = del /F
+MKDIR = mkdir
 
 # Compiler options
 # Two additional flags neccessary for Angstrom Linux. Don't use them with Ubuntu or Debian  
@@ -51,6 +52,7 @@ ifeq ($(TARGET),angstrom)
 CFLAGS += -march=armv4t
 CFLAGS += -mfloat-abi=soft
 endif
+CFLAGS += -Wno-psabi
 CFLAGS += -O0 
 CFLAGS += -g 
 CFLAGS += -I.
@@ -59,7 +61,10 @@ CFLAGS += -I$(CINCLUDE)
 CFLAGS += $(CDEFINE)
 
 # Our favourite
-all: $(PROJECT)
+all: $(OBJDIR) $(PROJECT)
+
+$(OBJDIR):
+	$(MKDIR) $(OBJDIR)
 
 deploy: all
 	$(SCP) $(PROJECT) $(PROJECT_CFG) $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR)
