@@ -33,3 +33,5 @@
 
 # .vscode Files - refine if files in here are needed
 .vscode/*
+
+bin/kleaner
