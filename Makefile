@@ -1,27 +1,16 @@
-PROJECT=.\\Driver\\kleaner
+PROJECT=.\\bin\\kleaner
 PROJECT_CFG=.\\Driver\\KleanerConfig.json
 
 TARGET_IP=192.168.7.2
 TARGET_DIR=kleaner
-TARGET_USER=debian
-
-# Two additional CFLAGS must be used for Angstrom
-# They must not be used for Debian or Ubuntu. I couldn't find out why. 
-# The hint came from C:\gcc-linaro\share\doc\gcc-linaro-arm-linux-gnueabihf\README.txt 
-#
-# Uncomment the following line if you use Angstrom on your BeagleBone
-#TARGET=angstrom
+TARGET_USER=ubuntu
 
 # Directory for includes
 SOURCE = .\\Driver\\src
+EXTERNAL = .\\Driver\\external
 INCLUDES = -I. \
 	-I$(SOURCE) \
-	-I$(SOURCE)\\nodejs\\src \
-	-I$(SOURCE)\\nodejs\\deps\\uv\\include \
-	-I$(SOURCE)\\nodejs\\deps\\v8\\include \
-	-I$(SOURCE)\\nodejs\\node_modules\\streaming-worker-sdk \
-	-I$(SOURCE)\\nodejs\\node_modules\\nan \
-	-L$(SOURCE)\\nodejs\\lib \
+	-I$(EXTERNAL)
 	
 
 # Directory for Cpp-Source
@@ -66,8 +55,6 @@ CFLAGS += -Wno-psabi
 CFLAGS += -O0 
 CFLAGS += -g 
 CFLAGS += -lpthread
-CFLAGS += -lv8
-CFLAGS += -v
 CFLAGS += $(INCLUDES)
 
 # Our favourite
