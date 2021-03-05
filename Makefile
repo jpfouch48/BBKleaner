@@ -10,8 +10,8 @@ TARGET_DIR_CFG=$(TARGET_DIR)/cfg
 TARGET_DIR_SVR=$(TARGET_DIR)/server
 
 # Directory for includes
-SOURCE = ./Driver/src
-EXTERNAL = ./Driver/external
+SOURCE = ./src
+EXTERNAL = ./external
 INCLUDES = -I. \
 	-I$(SOURCE) \
 	-I$(EXTERNAL)
@@ -21,7 +21,7 @@ INCLUDES = -I. \
 vpath %.cpp $(SOURCE)
 
 # Directory for object files
-OBJDIR = ./Driver/obj
+OBJDIR = ./bin/obj
 
 # Other dependencies
 DEPS = \
@@ -53,8 +53,6 @@ else
 	REMOVE = rm -rf
 	MKDIR = mkdir
 endif
-
-
 
 # Compiler options
 # Two additional flags neccessary for Angstrom Linux. Don't use them with Ubuntu or Debian  
