@@ -14,7 +14,14 @@ TARGET_USER=debian
 
 # Directory for includes
 SOURCE = .\\Driver\\src
-INCLUDES = -I. -I$(SOURCE) 
+INCLUDES = -I. \
+	-I$(SOURCE) \
+	-I$(SOURCE)\\nodejs\\src \
+	-I$(SOURCE)\\nodejs\\deps\\uv\\include \
+	-I$(SOURCE)\\nodejs\\deps\\v8\\include \
+	-I$(SOURCE)\\nodejs\\node_modules\\streaming-worker-sdk \
+	-I$(SOURCE)\\nodejs\\node_modules\\nan \
+	-L$(SOURCE)\\nodejs\\lib \
 	
 
 # Directory for Cpp-Source
@@ -59,6 +66,8 @@ CFLAGS += -Wno-psabi
 CFLAGS += -O0 
 CFLAGS += -g 
 CFLAGS += -lpthread
+CFLAGS += -lv8
+CFLAGS += -v
 CFLAGS += $(INCLUDES)
 
 # Our favourite
