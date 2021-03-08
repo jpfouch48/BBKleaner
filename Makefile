@@ -40,27 +40,15 @@ COBJ = \
  
 
 # gcc binaries to use
-ifeq ($(OS),Windows_NT)
-	CC = "C:\bin\gcc-linaro-7.5.0-2019\bin\arm-linux-gnueabihf-g++.exe"
-	LD = "C:\bin\gcc-linaro-7.5.0-2019\bin\arm-linux-gnueabihf-g++.exe"
-	SCP = "C:\bin\Putty\pscp.exe"
-	REMOVE = del /F
-	MKDIR = mkdir
-else
-	CC = arm-linux-gnueabihf-g++
-	LD = arm-linux-gnueabihf-g++
-	SCP = scp
-	REMOVE = rm -rf
-	MKDIR = mkdir
-endif
+CC = arm-linux-gnueabihf-g++
+LD = arm-linux-gnueabihf-g++
+SCP = scp
+REMOVE = rm -rf
+MKDIR = mkdir
 
 # Compiler options
 # Two additional flags neccessary for Angstrom Linux. Don't use them with Ubuntu or Debian  
 CFLAGS = -marm
-ifeq ($(TARGET),angstrom)
-CFLAGS += -march=armv4t
-CFLAGS += -mfloat-abi=soft
-endif
 CFLAGS += -Wno-psabi
 CFLAGS += -O0 
 CFLAGS += -g 
@@ -88,6 +76,6 @@ $(COBJ): $(OBJDIR)/%.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 clean:
-	$(REMOVE) '$(PROJECT)'
-	$(REMOVE) '$(OBJDIR)'
+	$(REMOVE) $(PROJECT)
+	$(REMOVE) $(OBJDIR)
 
