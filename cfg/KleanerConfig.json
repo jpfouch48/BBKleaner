@@ -5,7 +5,8 @@
 
   "device types": {
     "relay" : {
-        "num pins" : 1, 
+        "num pins" : 1,
+        "state delay": 100, 
         "pin states": {
             "open":  [ 0 ],
             "close": [ 1 ]
@@ -14,6 +15,7 @@
     
     "ball valve": {
         "num pins" : 2, 
+        "state delay": 3000, 
         "pin states": {
             "open":  [ 1, 0 ],
             "close": [ 0, 1 ],

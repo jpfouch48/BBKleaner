@@ -25,23 +25,25 @@ public:
 
   void          set_num_pins(int aNumPins)       { mNumPins = aNumPins; }
   int           get_num_pins()             const { return mNumPins; }
+  
+  void          set_state_delay(int aStateDelay) { mStateDelay = aStateDelay; }
+  int           get_state_delay()          const { return mStateDelay; }
+
   std::string   get_name()                 const { return mName; }
   PinStateMap_t get_pin_states()           const { return mPinStates; }
 
-  bool create_pin_state(std::string aStateName);
-  bool add_pin_state(std::string aStateName, int aState);
-
-
-  bool parse_json(const json &aCfg);
-
-  std::string toString() const;
+  bool          create_pin_state(std::string aStateName);
+  bool          add_pin_state(std::string aStateName, int aState);
+  bool          parse_json(const json &aCfg);
+  std::string   toString() const;
 
 protected:
 
 private:
-  std::string mName;
-  int mNumPins;
+  std::string   mName;
+  int           mNumPins;
+  int           mStateDelay;
   PinStateMap_t mPinStates;
 
-  LogInstance mLogMgr;
+  LogInstance   mLogMgr;
 };
