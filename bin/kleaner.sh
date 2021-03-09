@@ -1,3 +1,3 @@
 #!/bin/bash
-chmod 755 bin/kleaner
-bin/kleaner cfg/KleanerConfig.json
+chmod 755 kleaner
+./kleaner ../cfg/KleanerConfig.json -c ../cfg/config_cppcms.js

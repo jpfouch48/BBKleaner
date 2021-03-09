@@ -1,24 +1,26 @@
-PROJECT=./bin/kleaner
-PROJECT_CFG=./cfg/KleanerConfig.json
-PROJECT_SVR=./server/*
+PROJECT     = ./bin/kleaner
+PROJECT_CFG = ./cfg/*
 
-TARGET_IP=192.168.7.2
-TARGET_USER=ubuntu
-TARGET_DIR=.
-TARGET_DIR_BIN=$(TARGET_DIR)/bin
-TARGET_DIR_CFG=$(TARGET_DIR)/cfg
-TARGET_DIR_SVR=$(TARGET_DIR)/server
+DEPLOY_IP   = 192.168.7.2
+DEPLOY_USER = ubuntu
+TARGET_FS   = /home/jfaucher/mnt_pbb
 
 # Directory for includes
-SOURCE = ./src
+SRC_PATH = ./src
 EXTERNAL = ./external
-INCLUDES = -I. \
-	-I$(SOURCE) \
+
+
+SRC_INC = -I. \
+	-I$(SRC_PATH) \
+	-I$(TARGET_FS)/usr/local/include \
 	-I$(EXTERNAL)
-	
+
+LIB_INC = \
+	-L$(TARGET_FS)/usr/lib/arm-linux-gnueabihf \
+	-L$(TARGET_FS)/usr/local/lib
 
 # Directory for Cpp-Source
-vpath %.cpp $(SOURCE)
+vpath %.cpp $(SRC_PATH)
 
 # Directory for object files
 OBJDIR = ./bin/obj
@@ -40,40 +42,47 @@ COBJ = \
  
 
 # gcc binaries to use
-CC = arm-linux-gnueabihf-g++
-LD = arm-linux-gnueabihf-g++
-SCP = scp
+CC     = arm-linux-gnueabihf-g++
+LD     = $(CC)
+SCP    = scp
+SSHFS  = sshfs
 REMOVE = rm -rf
-MKDIR = mkdir
+MKDIR  = mkdir -p
+UMOUNT = umount
 
 # Compiler options
-# Two additional flags neccessary for Angstrom Linux. Don't use them with Ubuntu or Debian  
-CFLAGS = -marm
-CFLAGS += -Wno-psabi
-CFLAGS += -O0 
-CFLAGS += -g 
-CFLAGS += -lpthread
-CFLAGS += $(INCLUDES)
+CFLAGS = -marm -Wno-psabi -O0 -g 
+CFLAGS += $(SRC_INC)
+
+# Linker options
+LFLAGS =  -lpthread -lcppcms -lbooster -lz -lpcre -licuuc -licui18n -licudata
+LFLAGS += $(LIB_INC)
 
 # Our favourite
 all: $(OBJDIR) $(PROJECT)
+
+mnt_sshfs:
+	$(MKDIR) $(TARGET_FS)
+	$(SSHFS) $(DEPLOY_USER)@$(DEPLOY_IP):/ $(TARGET_FS) -o transform_symlinks 
+
+umnt_sshfs:
+	$(UMOUNT) $(TARGET_FS)
 
 $(OBJDIR):
 	$(MKDIR) $(OBJDIR)
 
 deploy: all
-	$(SCP) $(PROJECT) $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR_BIN)
-	$(SCP) $(PROJECT).sh $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR)
-	$(SCP) $(PROJECT_CFG) $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR_CFG)
-	$(SCP) $(PROJECT_SVR) $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR_SVR)
+	$(SCP) $(PROJECT)     						$(DEPLOY_USER)@$(DEPLOY_IP):./bin
+	$(SCP) $(PROJECT).sh  						$(DEPLOY_USER)@$(DEPLOY_IP):./bin
+	$(SCP) $(PROJECT_CFG) 						$(DEPLOY_USER)@$(DEPLOY_IP):./cfg
 
 # Linker call
 $(PROJECT): $(COBJ)
-	$(LD) -o $@ $^ $(CFLAGS)
+	$(LD) -o $@ $^ $(LFLAGS)
 
 # Compiler call
 $(COBJ): $(OBJDIR)/%.o: %.cpp $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) $(CFLAGS) -c -o $@ $< 
 
 clean:
 	$(REMOVE) $(PROJECT)
