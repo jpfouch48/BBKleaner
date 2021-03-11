@@ -3,7 +3,7 @@ PROJECT_CFG = ./cfg/*
 
 DEPLOY_IP   = 192.168.7.2
 DEPLOY_USER = ubuntu
-TARGET_FS   = /home/jfaucher/mnt_pbb
+TARGET_FS   = /mnt/pbb
 
 # Directory for includes
 SRC_PATH = ./src
@@ -45,10 +45,8 @@ COBJ = \
 CC     = arm-linux-gnueabihf-g++
 LD     = $(CC)
 SCP    = scp
-SSHFS  = sshfs
 REMOVE = rm -rf
 MKDIR  = mkdir -p
-UMOUNT = umount
 
 # Compiler options
 CFLAGS = -marm -Wno-psabi -O0 -g 
@@ -60,13 +58,6 @@ LFLAGS += $(LIB_INC)
 
 # Our favourite
 all: $(OBJDIR) $(PROJECT)
-
-mnt_sshfs:
-	$(MKDIR) $(TARGET_FS)
-	$(SSHFS) $(DEPLOY_USER)@$(DEPLOY_IP):/ $(TARGET_FS) -o transform_symlinks 
-
-umnt_sshfs:
-	$(UMOUNT) $(TARGET_FS)
 
 $(OBJDIR):
 	$(MKDIR) $(OBJDIR)
