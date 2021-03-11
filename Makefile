@@ -2,8 +2,7 @@ PROJECT     = ./bin/kleaner
 PROJECT_CFG = ./cfg/*
 
 DEPLOY_IP   = 192.168.7.2
-DEPLOY_USER = ubuntu
-TARGET_FS   = /mnt/pbb
+DEPLOY_USER = debian
 
 # Directory for includes
 SRC_PATH = ./src
@@ -12,12 +11,10 @@ EXTERNAL = ./external
 
 SRC_INC = -I. \
 	-I$(SRC_PATH) \
-	-I$(TARGET_FS)/usr/local/include \
+	-I/usr/arm-linux-gnueabihf/include/c++/8 \
 	-I$(EXTERNAL)
 
-LIB_INC = \
-	-L$(TARGET_FS)/usr/lib/arm-linux-gnueabihf \
-	-L$(TARGET_FS)/usr/local/lib
+LIB_INC = 
 
 # Directory for Cpp-Source
 vpath %.cpp $(SRC_PATH)
@@ -33,27 +30,28 @@ DEPS = \
 COBJ = \
  $(OBJDIR)/Kleaner.o \
  $(OBJDIR)/CfgMgr.o \
- $(OBJDIR)/CommMgr.o \
  $(OBJDIR)/Device.o \
  $(OBJDIR)/DeviceType.o \
  $(OBJDIR)/Driver.o \
+ $(OBJDIR)/GPIOConst.o \
+ $(OBJDIR)/GPIOMgr.o \
  $(OBJDIR)/LogInstance.o \
  $(OBJDIR)/LogMgr.o 
  
 
 # gcc binaries to use
-CC     = arm-linux-gnueabihf-g++
+CC     = arm-linux-gnueabihf-g++-8
 LD     = $(CC)
 SCP    = scp
 REMOVE = rm -rf
 MKDIR  = mkdir -p
 
 # Compiler options
-CFLAGS = -marm -Wno-psabi -O0 -g 
+CFLAGS = -marm -Wno-psabi -O0 -g -std=c++17
 CFLAGS += $(SRC_INC)
 
 # Linker options
-LFLAGS =  -lpthread -lcppcms -lbooster -lz -lpcre -licuuc -licui18n -licudata
+LFLAGS =  -lpthread -lstdc++fs
 LFLAGS += $(LIB_INC)
 
 # Our favourite
