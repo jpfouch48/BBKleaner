@@ -50,8 +50,8 @@ bool Device::parse_json(const json &aCfg)
   // Add Pins
   for(auto &lPin : aCfg["pins"].items())
   {
-    mLogMgr.Info("parse_json(%s) - added pin %d\n", mName.c_str(), lPin.value().get<int>());
-    mPins.push_back(lPin.value().get<int>());
+    mLogMgr.Info("parse_json(%s) - added pin '%s'\n", mName.c_str(), lPin.value().get<std::string>().c_str());
+    mPins.push_back(lPin.value());
   }
 
   if(mPins.size() != mDeviceType->get_num_pins())
@@ -74,7 +74,7 @@ std::string Device::toString() const
   lStr << "Pins: [";  
   for(auto lPin : get_pins())
   {
-    lStr << " " << lPin;
+    lStr << " '" << lPin << "'" ;
   }
   lStr << " ]" << std::endl;
   return lStr.str();  

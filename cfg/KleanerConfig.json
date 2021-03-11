@@ -25,13 +25,13 @@
     },
 
   "devices": {   
-    "Co2":           { "type": "relay",      "pins": [ 10 ] },
-    "Pump":          { "type": "relay",      "pins": [ 11 ] },
-    "Water In":      { "type": "ball valve", "pins": [ 12, 13 ] },
-    "Sanitizer In":  { "type": "ball valve", "pins": [ 14, 15 ] },
-    "Cleaner In":    { "type": "ball valve", "pins": [ 16, 17 ] },
-    "Waste Out":     { "type": "ball valve", "pins": [ 18, 19 ] },
-    "Sanitizer Out": { "type": "ball valve", "pins": [ 20, 21 ] },
-    "Cleaner Out":   { "type": "ball valve", "pins": [ 21, 22 ] }
+    "Co2":           { "type": "relay",      "pins": [ "P8_7" ] },
+    "Pump":          { "type": "relay",      "pins": [ "P8_8" ] },
+    "Water In":      { "type": "ball valve", "pins": [ "P8_9",  "P8_10" ] },
+    "Sanitizer In":  { "type": "ball valve", "pins": [ "P8_11", "P8_12" ] },
+    "Cleaner In":    { "type": "ball valve", "pins": [ "P8_15", "P8_16" ] },
+    "Waste Out":     { "type": "ball valve", "pins": [ "P8_17", "P8_18" ] },
+    "Sanitizer Out": { "type": "ball valve", "pins": [ "P9_23", "P9_25" ] },
+    "Cleaner Out":   { "type": "ball valve", "pins": [ "P9_27", "P9_30" ] }
   }
 }

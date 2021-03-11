@@ -30,9 +30,9 @@ public:
 
   bool parse_json(const json &aCfg);
   
-  std::string        get_name()        const { return mName; }
-  std::vector<int>   get_pins()        const { return mPins; }
-  const DeviceType * get_device_type() const { return mDeviceType; }
+  std::string               get_name()        const { return mName; }
+  std::vector<std::string>  get_pins()        const { return mPins; }
+  const DeviceType*         get_device_type() const { return mDeviceType; }
 
   std::string toString() const;
 protected:
@@ -40,6 +40,6 @@ protected:
 private:
   std::string mName;
   const DeviceType *mDeviceType;
-  std::vector<int> mPins;
+  std::vector<std::string> mPins;
   LogInstance mLogMgr;  
 };
