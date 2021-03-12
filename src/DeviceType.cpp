@@ -80,6 +80,13 @@ bool DeviceType::parse_json(const json &aCfg)
   }
   set_state_delay(aCfg["state delay"]);
 
+  if(false == aCfg.contains("direction"))
+  {
+    mLogMgr.Error("parse_json(%s) - 'direction' not found\n", mName.c_str());
+    return false;
+  }
+  set_direction(aCfg["direction"]);
+
   if(false == aCfg.contains("pin states"))
   {
     mLogMgr.Error("parse_json(%s) - 'pin states' not found\n", mName.c_str());
@@ -124,9 +131,10 @@ bool DeviceType::parse_json(const json &aCfg)
 std::string DeviceType::toString() const
 {
   std::ostringstream lStr;
-  lStr << "Device Type: " << get_name()        << std::endl;
-  lStr << "Num Pins:    " << get_num_pins()    << std::endl;
-  lStr << "State Delay: " << get_state_delay() << std::endl;
+  lStr << "Device Type: " << get_name()                 << std::endl;
+  lStr << "Num Pins:    " << get_num_pins()             << std::endl;
+  lStr << "Directions:  " << get_direction().toString() << std::endl;
+  lStr << "State Delay: " << get_state_delay()          << std::endl;
 
   lStr << "Pin States: [" << std::endl;  
   for(auto lPinState : get_pin_states())

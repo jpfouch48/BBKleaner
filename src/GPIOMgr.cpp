@@ -97,8 +97,8 @@ int GPIOMgr::unexportPin(unsigned int gpio) {
 //
 // ****************************************************************************
 // set direction (equivalent to i.e echo "in" > /sys/class/gpio68/direction)
-int GPIOMgr::setDirection(unsigned int gpio, DIRECTION direction) const {
-    return writeToSysfs<const char*>(gpio, "/direction", direction == OUTPUT ? "out" : "in");
+int GPIOMgr::setDirection(unsigned int gpio, GPIODirection direction) const {
+    return writeToSysfs<const char*>(gpio, "/direction", direction.get() == GPIODirection::OUTPUT ? "out" : "in");
 }
 
 // ****************************************************************************
@@ -110,7 +110,7 @@ int GPIOMgr::getDirection(unsigned int gpio) const {
 
     auto ret = readFromSysfs<char*>(gpio, "/direction", &direction);
     if (ret == 0)
-        return (direction == 'i') ? INPUT : OUTPUT;
+        return (direction == 'i') ? GPIODirection::INPUT : GPIODirection::OUTPUT;
 
     return ret;
 }

@@ -6,38 +6,25 @@ DEPLOY_USER = debian
 
 # Directory for includes
 SRC_PATH = ./src
-EXTERNAL = ./external
+OBJ_PATH = ./bin/obj
+EXT_PATH = ./external
 
 
 SRC_INC = -I. \
 	-I$(SRC_PATH) \
 	-I/usr/arm-linux-gnueabihf/include/c++/8 \
-	-I$(EXTERNAL)
+	-I$(EXT_PATH)
 
 LIB_INC = 
 
 # Directory for Cpp-Source
 vpath %.cpp $(SRC_PATH)
 
-# Directory for object files
-OBJDIR = ./bin/obj
+SRC_FILES = $(shell find $(SRC_PATH) -type f -name *.cpp)
+OBJ_FILES = $(patsubst $(SRC_PATH)%.cpp,$(OBJ_PATH)%.o,$(SRC_FILES))
 
 # Other dependencies
-DEPS = \
- Makefile 
-
-# Compiler object files 
-COBJ = \
- $(OBJDIR)/Kleaner.o \
- $(OBJDIR)/CfgMgr.o \
- $(OBJDIR)/Device.o \
- $(OBJDIR)/DeviceType.o \
- $(OBJDIR)/Driver.o \
- $(OBJDIR)/GPIOConst.o \
- $(OBJDIR)/GPIOMgr.o \
- $(OBJDIR)/LogInstance.o \
- $(OBJDIR)/LogMgr.o 
- 
+DEPS = Makefile
 
 # gcc binaries to use
 CC     = arm-linux-gnueabihf-g++-8
@@ -55,10 +42,10 @@ LFLAGS =  -lpthread -lstdc++fs
 LFLAGS += $(LIB_INC)
 
 # Our favourite
-all: $(OBJDIR) $(PROJECT)
+all: $(OBJ_PATH) $(PROJECT)
 
-$(OBJDIR):
-	$(MKDIR) $(OBJDIR)
+$(OBJ_PATH):
+	$(MKDIR) $(OBJ_PATH)
 
 deploy: all
 	$(SCP) $(PROJECT)     						$(DEPLOY_USER)@$(DEPLOY_IP):./bin
@@ -66,14 +53,14 @@ deploy: all
 	$(SCP) $(PROJECT_CFG) 						$(DEPLOY_USER)@$(DEPLOY_IP):./cfg
 
 # Linker call
-$(PROJECT): $(COBJ)
+$(PROJECT): $(OBJ_FILES)
 	$(LD) -o $@ $^ $(LFLAGS)
 
 # Compiler call
-$(COBJ): $(OBJDIR)/%.o: %.cpp $(DEPS)
+$(OBJ_FILES): $(OBJ_PATH)/%.o: %.cpp $(DEPS) $(SRC_PATH)/%.h
 	$(CC) $(CFLAGS) -c -o $@ $< 
 
 clean:
 	$(REMOVE) $(PROJECT)
-	$(REMOVE) $(OBJDIR)
+	$(REMOVE) $(OBJ_PATH)
 

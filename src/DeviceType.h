@@ -1,6 +1,8 @@
 #pragma once
 
 #include "LogInstance.h"
+#include "GPIOConst.h"
+#include "GPIOMgr.h"
 #include <string>
 #include <map>
 #include <array>
@@ -25,6 +27,9 @@ public:
 
   void          set_num_pins(int aNumPins)       { mNumPins = aNumPins; }
   int           get_num_pins()             const { return mNumPins; }
+
+  GPIODirection get_direction()                       const { return mDirection; }
+  void          set_direction(std::string aDirection)       { mDirection.set(aDirection); }
   
   void          set_state_delay(int aStateDelay) { mStateDelay = aStateDelay; }
   int           get_state_delay()          const { return mStateDelay; }
@@ -40,7 +45,8 @@ public:
 protected:
 
 private:
-  std::string   mName;
+  std::string   mName;  
+  GPIODirection mDirection;
   int           mNumPins;
   int           mStateDelay;
   PinStateMap_t mPinStates;
